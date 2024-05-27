@@ -7,14 +7,19 @@ bp = Blueprint('predict', __name__)
 @bp.route('/predict', methods=['POST'])
 def predict():
     """
-    Predict PS25 level
+       Predict PS25 Level
     ---
     tags:
       - Prediction
+    summary: Predict the PS25 level based on provided features.
+    description: >
+      This endpoint predicts the PS25 level based on an array of numerical features.
+      The features should be provided in the request body as an array of numbers.
     parameters:
       - name: body
         in: body
         required: true
+        description: JSON object containing an array of numerical features for prediction.
         schema:
           type: object
           required:
@@ -24,7 +29,9 @@ def predict():
               type: array
               items:
                 type: number
-              example: [1.0, 2.0, 3.0, 4.0]
+              description: >
+                An array of numerical features used for the prediction. Each feature should be a number.
+              example: [41, 42, 43, 42, 41, 43, 42]
     responses:
       200:
         description: Prediction result
@@ -33,20 +40,26 @@ def predict():
           properties:
             ps25_level:
               type: number
+              description: Predicted PS25 level.
+              example: 75
       400:
-        description: No features provided
+        description: Bad Request - No features provided
         schema:
           type: object
           properties:
             error:
               type: string
+              description: Error message indicating that no features were provided in the request.
+              example: "No features provided"
       500:
-        description: Model not loaded or Prediction error
+        description: Internal Server Error - Model not loaded or Prediction error
         schema:
           type: object
           properties:
             error:
               type: string
+              description: Error message indicating an issue with the model loading or prediction process.
+              example: "Model not loaded or Prediction error"
     """
     model = load_model()
     if model is None:
